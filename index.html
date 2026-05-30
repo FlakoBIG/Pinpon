@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PingPong Manager</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="header-inner">
+      <div class="logo">🏓 <span>PingPong</span> Manager</div>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main>
+
+    <!-- Cola de jugadores -->
+    <section class="card queue-card">
+      <h2>👥 Cola de Jugadores</h2>
+      <div class="add-player">
+        <input type="text" id="playerInput" placeholder="Nombre del jugador..." maxlength="20" />
+        <button id="addPlayerBtn" onclick="addPlayer()">Agregar</button>
+      </div>
+      <ul id="queueList" class="queue-list"></ul>
+      <p id="emptyQueue" class="empty-msg">No hay jugadores en cola.</p>
+    </section>
+
+    <!-- Juego actual -->
+    <section class="card game-card" id="gameSection">
+      <h2>🎮 Juego Actual</h2>
+
+      <div id="noGame" class="no-game-msg">
+        <span>⚡</span>
+        <p>Agrega al menos 2 jugadores para iniciar un juego.</p>
+      </div>
+
+      <div id="gameBoard" class="game-board hidden">
+        <div class="scoreboard">
+
+          <div class="player-score" id="p1Block">
+            <div class="player-avatar" id="p1Avatar">A</div>
+            <div class="player-name" id="p1Name">Jugador 1</div>
+            <div class="score" id="p1Score">0</div>
+            <div class="score-btns">
+              <button class="btn-minus" onclick="changeScore(1, -1)">−</button>
+              <button class="btn-plus" onclick="changeScore(1, 1)">+</button>
+            </div>
+          </div>
+
+          <div class="vs-badge">VS</div>
+
+          <div class="player-score" id="p2Block">
+            <div class="player-avatar" id="p2Avatar">B</div>
+            <div class="player-name" id="p2Name">Jugador 2</div>
+            <div class="score" id="p2Score">0</div>
+            <div class="score-btns">
+              <button class="btn-minus" onclick="changeScore(2, -1)">−</button>
+              <button class="btn-plus" onclick="changeScore(2, 1)">+</button>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="game-info">
+          <span id="gameLimit">Primero en llegar a <strong>11</strong> puntos gana</span>
+        </div>
+
+        <div class="game-actions">
+          <button class="btn-settings" onclick="toggleSettings()">⚙️ Configurar</button>
+          <button class="btn-end" onclick="endGame()">🏁 Terminar Juego</button>
+        </div>
+
+        <!-- Settings panel -->
+        <div id="settingsPanel" class="settings-panel hidden">
+          <label>Puntos para ganar:
+            <input type="number" id="winPoints" value="11" min="1" max="99" />
+          </label>
+          <button onclick="applySettings()">Aplicar</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Siguiente jugador -->
+    <section class="card next-card" id="nextSection">
+      <h2>⏭️ Siguiente en Jugar</h2>
+      <div id="nextPlayer" class="next-player-display">
+        <span class="next-avatar" id="nextAvatar">?</span>
+        <span class="next-name" id="nextName">—</span>
+      </div>
+    </section>
+
+    <!-- Historial -->
+    <section class="card history-card">
+      <h2>🏆 Historial de Partidas</h2>
+      <ul id="historyList" class="history-list"></ul>
+      <p id="emptyHistory" class="empty-msg">Aún no hay partidas jugadas.</p>
+    </section>
+
+  </main>
+
+  <!-- Modal de ganador -->
+  <div id="winModal" class="modal hidden">
+    <div class="modal-content">
+      <div class="confetti-area" id="confettiArea"></div>
+      <div class="trophy">🏆</div>
+      <h2>¡Ganador!</h2>
+      <div class="winner-name" id="winnerName">—</div>
+      <div class="winner-score" id="winnerScore"></div>
+      <div class="next-up" id="nextUpInfo"></div>
+      <button class="btn-next-game" onclick="closeModal()">Siguiente Partida ▶</button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <p>Creado por <span class="skinny">Skinny</span><span class="project">Project</span></p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
