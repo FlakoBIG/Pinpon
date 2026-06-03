@@ -71,7 +71,6 @@
 
         <div class="game-actions">
           <button class="btn-settings" onclick="toggleSettings()">⚙️ Configurar</button>
-          <button class="btn-end" onclick="endGame()">🏁 Terminar Juego</button>
         </div>
 
         <!-- Settings panel -->
@@ -93,9 +92,16 @@
       </div>
     </section>
 
+    <!-- Tabla de victorias -->
+    <section class="card wins-card">
+      <h2>🥇 Tabla de Victorias</h2>
+      <ul id="winsList" class="wins-list"></ul>
+      <p id="emptyWins" class="empty-msg">Aún no hay victorias registradas.</p>
+    </section>
+
     <!-- Historial -->
     <section class="card history-card">
-      <h2>🏆 Historial de Partidas</h2>
+      <h2>📋 Historial de Partidas</h2>
       <ul id="historyList" class="history-list"></ul>
       <p id="emptyHistory" class="empty-msg">Aún no hay partidas jugadas.</p>
     </section>

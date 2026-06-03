@@ -3,6 +3,8 @@ let queue = [];          // nombres en cola
 let currentGame = null;  // { p1, p2, score1, score2, winPoints }
 let history = [];
 let winPoints = 11;
+let winnerSide = null;   // 1 o 2 — lado donde se quedó el último ganador
+let wins = {};           // { nombre: cantidad }
 
 // ===== INIT =====
 document.addEventListener('DOMContentLoaded', () => {
@@ -31,8 +33,24 @@ function removePlayer(index) {
 // ===== GAME =====
 function startGame() {
   if (queue.length < 2) return;
-  const p1 = queue.shift();
-  const p2 = queue.shift();
+
+  let p1, p2;
+
+  if (winnerSide === 1) {
+    // El ganador estaba a la izquierda, se queda como p1
+    p1 = queue.shift();
+    p2 = queue.shift();
+  } else if (winnerSide === 2) {
+    // El ganador estaba a la derecha, se queda como p2
+    p2 = queue.shift();
+    p1 = queue.shift();
+  } else {
+    // Primer juego, sin historial de lado
+    p1 = queue.shift();
+    p2 = queue.shift();
+  }
+
+  winnerSide = null;
   currentGame = { p1, p2, score1: 0, score2: 0, winPoints };
   renderAll();
 }
@@ -63,6 +81,12 @@ function declareWinner(player) {
   const s1 = currentGame.score1;
   const s2 = currentGame.score2;
 
+  // Sumar victoria
+  wins[winner] = (wins[winner] || 0) + 1;
+
+  // Guardar el lado del ganador para el próximo juego
+  winnerSide = player;
+
   // Guardar historial
   const now = new Date();
   const timeStr = now.toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' });
@@ -71,10 +95,8 @@ function declareWinner(player) {
   // El perdedor va al final de la cola
   queue.push(loser);
 
-  // Si hay alguien esperando, el ganador se queda y juega contra el siguiente
-  // Si no hay nadie, el ganador también va a la cola
+  // El ganador al frente para que startGame lo tome primero
   if (queue.length >= 1) {
-    // El ganador se queda: lo ponemos al frente para que startGame lo tome primero
     queue.unshift(winner);
   } else {
     queue.push(winner);
@@ -159,6 +181,7 @@ function renderAll() {
   renderQueue();
   renderGameBoard();
   renderNextPlayer();
+  renderWins();
   renderHistory();
 }
 
@@ -236,8 +259,39 @@ function renderNextPlayer() {
   name.textContent = next;
 }
 
-function renderHistory() {
-  const list  = document.getElementById('historyList');
+function renderWins() {
+  const list  = document.getElementById('winsList');
+  const empty = document.getElementById('emptyWins');
+  list.innerHTML = '';
+
+  const entries = Object.entries(wins).sort((a, b) => b[1] - a[1]);
+
+  if (entries.length === 0) {
+    empty.classList.remove('hidden');
+    return;
+  }
+  empty.classList.add('hidden');
+
+  const medals = ['🥇', '🥈', '🥉'];
+
+  entries.forEach(([name, count], i) => {
+    const li = document.createElement('li');
+    const medal = medals[i] || '🏓';
+    const isFirst = i === 0;
+    li.className = isFirst ? 'wins-item wins-first' : 'wins-item';
+    li.innerHTML = `
+      <span class="wins-medal">${medal}</span>
+      <span class="wins-name">${escHtml(name)}</span>
+      <span class="wins-bar-wrap">
+        <span class="wins-bar" style="width:${Math.min(100, (count / entries[0][1]) * 100)}%"></span>
+      </span>
+      <span class="wins-count">${count} <span class="wins-label">${count === 1 ? 'victoria' : 'victorias'}</span></span>
+    `;
+    list.appendChild(li);
+  });
+}
+
+function renderHistory() {  const list  = document.getElementById('historyList');
   const empty = document.getElementById('emptyHistory');
   list.innerHTML = '';
 
